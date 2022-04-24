@@ -6,25 +6,76 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+# Installed/Required Packages 
+
+# Geosphere (Required for calculating store distance)
+# https://cran.r-project.org/web/packages/geosphere/vignettes/geosphere.pdf
+library ("geosphere")
+
+# Data setup
+healthfooddata <- read.csv("healthfooddata.csv")
+saltlakecitydata <- healthfooddata[which(healthfooddata$city == 'Salt Lake City'),]
+provodata <- healthfooddata[which(healthfooddata$city == 'Provo'),]
+southjordandata <- healthfooddata[which(healthfooddata$city == 'South Jordan'),]
+oremdata <- healthfooddata[which(healthfooddata$city == 'Orem'),]
+logandata <- healthfooddata[which(healthfooddata$city == 'Logan'),]
+wellingtondata <- healthfooddata[which(healthfooddata$city == 'Wellington'),]
+morgandata <- healthfooddata[which(healthfooddata$city == 'Morgan'),]
+farmingtondata <- healthfooddata[which(healthfooddata$city == 'Farmington'),]
+rooseveltdata <- healthfooddata[which(healthfooddata$city == 'Roosevelt'),]
+woodscrossdata <- healthfooddata[which(healthfooddata$city == 'Woods Cross'),]
 ```
 
-## R Markdown
+## Summary Statistics on Population
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+summary(saltlakecitydata)
+summary(provodata)
+summary(southjordandata)
+summary(oremdata)
+summary(logandata)
+summary(wellingtondata)
+summary(morgandata)
+summary(farmingtondata)
+summary(rooseveltdata)
+summary(woodscrossdata)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+Plotting City population and Median Household income
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+
+```{r}
+# population plot
+barplot(c(saltlakecitydata$population[1], provodata$population[1], southjordandata$population[1], oremdata$population[1], logandata$population[1], wellingtondata$population[1], morgandata$population[1], farmingtondata$population[1], rooseveltdata$population[1], woodscrossdata$population[1]))
+
+# median income plot
+barplot(c(saltlakecitydata$median.household.income[1], provodata$median.household.income[1], southjordandata$median.household.income[1], oremdata$median.household.income[1], logandata$median.household.income[1], wellingtondata$median.household.income[1], morgandata$median.household.income[1], farmingtondata$median.household.income[1], rooseveltdata$median.household.income[1], woodscrossdata$median.household.income[1]))
+
+# DO NUMBER OF PEOPLE WITH VECHILES 
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## Store Accessibility
+
+Store Distance
+
+```{r}
+# Calculating store distances from longitude and latitude
+slcavgdist = 0
+for (x in 1:5) {
+  if (x != 5) {
+    for (y in 1:5) {
+      if (y != 5) {
+        saltlakestoredistance <- distm(c(saltlakecitydata$longitude[x], saltlakecitydata$latitude[y]), c(saltlakecitydata$longitude[x + 1], saltlakecitydata$latitude[y + 1]), fun = distHaversine)
+      }
+    }
+  }
+  slcavgdist = slcavgdist + saltlakestoredistance;
+}
+# average distance between stores in meters
+slcavgdist = slcavgdist / 5;
+
+```
+
