@@ -44,24 +44,33 @@ summary(woodscrossdata)
 
 Plotting City population and Median Household income
 
-
 ```{r}
-
 # population plot
-barplot(c(saltlakecitydata$population[1], provodata$population[1], southjordandata$population[1], oremdata$population[1], logandata$population[1], wellingtondata$population[1], morgandata$population[1], farmingtondata$population[1], rooseveltdata$population[1], woodscrossdata$population[1]), names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), xlab = "Cities",
-ylab = "Number Of People", main = "Population Bar Plot", col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
-
-legend("topright",                                    # Add legend to barplot
+totalPopulations <- c(saltlakecitydata$population[1], provodata$population[1], southjordandata$population[1], oremdata$population[1],
+                      logandata$population[1], wellingtondata$population[1], morgandata$population[1], farmingtondata$population[1],
+                      rooseveltdata$population[1], woodscrossdata$population[1])
+barplot(totalPopulations, 
+        names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), 
+        xlab = "Cities",
+        ylab = "Number Of People", 
+        main = "Population Bar Plot", 
+        col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
+legend("topright",                                    # Add legend to bar plot
        legend = c("Urban Cities", "Rural Cities"),
        fill = c("#1b98e0", "#111111"))
 
-
-
 # median income plot
-barplot(c(saltlakecitydata$median.household.income[1], provodata$median.household.income[1], southjordandata$median.household.income[1], oremdata$median.household.income[1], logandata$median.household.income[1], wellingtondata$median.household.income[1], morgandata$median.household.income[1], farmingtondata$median.household.income[1], rooseveltdata$median.household.income[1], woodscrossdata$median.household.income[1]), names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), xlab = "Cities",
-ylab = "Median Income by Dollar", main = "Medium Income Bar Plot", col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
-
-legend("topright",                                    # Add legend to barplot
+totalMedianIncome <- c(saltlakecitydata$median.household.income[1], provodata$median.household.income[1], 
+                       southjordandata$median.household.income[1], oremdata$median.household.income[1], logandata$median.household.income[1], 
+                       wellingtondata$median.household.income[1], morgandata$median.household.income[1], farmingtondata$median.household.income[1], 
+                       rooseveltdata$median.household.income[1], woodscrossdata$median.household.income[1])
+barplot(totalMedianIncome, 
+        names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), 
+        xlab = "Cities", 
+        ylab = "Median Income by Dollar", 
+        main = "Medium Income Bar Plot", 
+        col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
+legend("topright",                                    # Add legend to bar plot
        legend = c("Urban Cities", "Rural Cities"),
        fill = c("#1b98e0", "#111111"))
 
@@ -75,277 +84,197 @@ legend("topright",                                    # Add legend to barplot
 Store Distance
 
 ```{r}
-# Calculating salt lake city average store distance from longitude and latitude
-slcavgdist = 0
+# Calculating average store distance from longitude and latitude for urban cities
+# Initialize distance arrays
+slcdist <- replicate(10,0)
+logandist <- replicate(10,0)
+provodist <- replicate(10,0)
+oremdist <- replicate(10,0)
+sjdist <- replicate(10,0)
+
+# Loop through and calculate distances between all store variations
+i = 0
 for (x in 1:5) {
-  i = x + 1
-  if (i == 6)
+  nextStore = x + 1
+  if (nextStore == 6)
     next
-  for (y in i:5) {
+  for (y in nextStore:5) {
     if (x != y) {
-      temp = distHaversine(c(saltlakecitydata$longitude[x], saltlakecitydata$latitude[x]),
+      i = i + 1
+      
+      slcdist[i] <- distHaversine(c(saltlakecitydata$longitude[x], saltlakecitydata$latitude[x]),
                            c(saltlakecitydata$longitude[y], saltlakecitydata$latitude[y]))
-      slcavgdist = temp + slcavgdist
-    }
-  }
-}
-slcavgdist = slcavgdist / 10
-```
-
-
-```{r}
-# Calculating logan average store distance from longitude and latitude
-loganavgdist = 0
-for (x in 1:5) {
-  i = x + 1
-  if (i == 6)
-    next
-  for (y in i:5) {
-    if (x != y) {
-      temp = distHaversine(c(logandata$longitude[x], logandata$latitude[x]),
+      
+      logandist[i] <- distHaversine(c(logandata$longitude[x], logandata$latitude[x]),
                            c(logandata$longitude[y], logandata$latitude[y]))
-      loganavgdist = temp + loganavgdist
-    }
-  }
-}
-loganavgdist = loganavgdist / 10
-```
-
-```{r}
-# Calculating provo average store distance from longitude and latitude
-provoavgdist = 0
-for (x in 1:5) {
-  i = x + 1
-  if (i == 6)
-    next
-  for (y in i:5) {
-    if (x != y) {
-      temp = distHaversine(c(provodata$longitude[x], provodata$latitude[x]),
+      
+      provodist[i] <- distHaversine(c(provodata$longitude[x], provodata$latitude[x]),
                            c(provodata$longitude[y], provodata$latitude[y]))
-      provoavgdist = temp + provoavgdist
-    }
-  }
-}
-provoavgdist = provoavgdist / 10
-```
-
-
-```{r}
-# Calculating orem average store distance from longitude and latitude
-oremavgdist = 0
-for (x in 1:5) {
-  i = x + 1
-  if (i == 6)
-    next
-  for (y in i:5) {
-    if (x != y) {
-      temp = distHaversine(c(oremdata$longitude[x], oremdata$latitude[x]),
+      
+      oremdist[i] <- distHaversine(c(oremdata$longitude[x], oremdata$latitude[x]),
                            c(oremdata$longitude[y], oremdata$latitude[y]))
-      oremavgdist = temp + oremavgdist
-    }
-  }
-}
-oremavgdist = oremavgdist / 10
-```
-
-```{r}
-# Calculating farmington average store distance from longitude and latitude
-farmingtonavgdist = 0
-for (x in 1:5) {
-  i = x + 1
-  if (i == 6)
-    next
-  for (y in i:5) {
-    if (x != y) {
-      temp = distHaversine(c(farmingtondata$longitude[x], farmingtondata$latitude[x]),
-                           c(farmingtondata$longitude[y], farmingtondata$latitude[y]))
-      farmingtonavgdist = temp + farmingtonavgdist
-    }
-  }
-}
-farmingtonavgdist = farmingtonavgdist / 10
-```
-
-```{r}
-# Calculating morgan average store distance from longitude and latitude
-morganavgdist = 0
-for (x in 1:5) {
-  i = x + 1
-  if (i == 6)
-    next
-  for (y in i:5) {
-    if (x != y) {
-      temp = distHaversine(c(morgandata$longitude[x], morgandata$latitude[x]),
-                           c(morgandata$longitude[y], morgandata$latitude[y]))
-      morganavgdist = temp + morganavgdist
-    }
-  }
-}
-morganavgdist = morganavgdist / 10
-```
-
-```{r}
-# Calculating roosevelt average store distance from longitude and latitude
-rooseveltavgdist = 0
-for (x in 1:5) {
-  i = x + 1
-  if (i == 6)
-    next
-  for (y in i:5) {
-    if (x != y) {
-      temp = distHaversine(c(rooseveltdata$longitude[x], rooseveltdata$latitude[x]),
-                           c(rooseveltdata$longitude[y], rooseveltdata$latitude[y]))
-      rooseveltavgdist = temp + rooseveltavgdist
-    }
-  }
-}
-rooseveltavgdist = rooseveltavgdist / 10
-```
-
-```{r}
-# Calculating southjordan average store distance from longitude and latitude
-southjordanavgdist = 0
-for (x in 1:5) {
-  i = x + 1
-  if (i == 6)
-    next
-  for (y in i:5) {
-    if (x != y) {
-      temp = distHaversine(c(southjordandata$longitude[x], southjordandata$latitude[x]),
+      
+      sjdist[i] <- distHaversine(c(southjordandata$longitude[x], southjordandata$latitude[x]),
                            c(southjordandata$longitude[y], southjordandata$latitude[y]))
-      southjordanavgdist = temp + southjordanavgdist
     }
   }
 }
-southjordanavgdist = southjordanavgdist / 10
+
+# Calculate average distance
+slcavgdist = mean(slcdist)
+loganavgdist = mean(logandist)
+provoavgdist = mean(provodist)
+oremavgdist = mean(oremdist)
+sjavgdist = mean(sjdist)
 ```
 
 ```{r}
-# Calculating wellington average store distance from longitude and latitude
-wellingtonavgdist = 0
+# Calculating average store distances from longitude and latitude for rural cities
+# Initialize distance arrays
+farmingtondist <- replicate(10,0)
+morgandist <- replicate(10,0)
+wellingtondist <- replicate(10,0)
+rooseveltdist <- replicate(10,0)
+woodscrossdist <- replicate(10,0)
+
+# Loop through and calculate distances between all store variations
+i = 0
 for (x in 1:5) {
-  i = x + 1
-  if (i == 6)
+  nextStore = x + 1
+  if (nextStore == 6)
     next
-  for (y in i:5) {
+  for (y in nextStore:5) {
     if (x != y) {
-      temp = distHaversine(c(wellingtondata$longitude[x], wellingtondata$latitude[x]),
+      i = i + 1
+      
+      farmingtondist[i] <- distHaversine(c(farmingtondata$longitude[x], farmingtondata$latitude[x]),
+                           c(farmingtondata$longitude[y], farmingtondata$latitude[y]))
+      
+      morgandist[i] <- distHaversine(c(morgandata$longitude[x], morgandata$latitude[x]),
+                           c(morgandata$longitude[y], morgandata$latitude[y]))
+            
+      wellingtondist[i] <- distHaversine(c(wellingtondata$longitude[x], wellingtondata$latitude[x]),
                            c(wellingtondata$longitude[y], wellingtondata$latitude[y]))
-      wellingtonavgdist = temp + wellingtonavgdist
-    }
-  }
-}
-wellingtonavgdist = wellingtonavgdist / 10
-```
-
-```{r}
-# Calculating woodscross average store distance from longitude and latitude
-woodscrossavgdist = 0
-for (x in 1:5) {
-  i = x + 1
-  if (i == 6)
-    next
-  for (y in i:5) {
-    if (x != y) {
-      temp = distHaversine(c(woodscrossdata$longitude[x], woodscrossdata$latitude[x]),
+      
+      rooseveltdist[i] <- distHaversine(c(rooseveltdata$longitude[x], rooseveltdata$latitude[x]),
+                           c(rooseveltdata$longitude[y], rooseveltdata$latitude[y]))
+      
+      woodscrossdist[i] <- distHaversine(c(woodscrossdata$longitude[x], woodscrossdata$latitude[x]),
                            c(woodscrossdata$longitude[y], woodscrossdata$latitude[y]))
-      woodscrossavgdist = temp + woodscrossavgdist
     }
   }
 }
-woodscrossavgdist = woodscrossavgdist / 10
+
+# Calculate average distance
+farmingtonavgdist = mean(farmingtondist)
+morganavgdist = mean(morgandist)
+wellingtonavgdist = mean(wellingtondist)
+rooseveltavgdist = mean(rooseveltdist)
+woodscrossavgdist = mean(woodscrossdist)
 ```
 
 ```{r}
-# distance plot
-barplot(c(slcavgdist, provoavgdist, southjordanavgdist, oremavgdist, loganavgdist, wellingtonavgdist, morganavgdist, farmingtonavgdist, rooseveltavgdist, woodscrossavgdist), names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), xlab = "Cities",
-ylab = "Distance in Meters (m)", main = "Average Distance between 5 stores", col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
+# store all average distances in a new array
+totalAvgDistances <- c(slcavgdist, provoavgdist, sjavgdist, oremavgdist, loganavgdist, wellingtonavgdist,
+                     morganavgdist, farmingtonavgdist, rooseveltavgdist, woodscrossavgdist)
 
-legend("topright",                                    # Add legend to barplot
+# distance plot
+barplot(totalAvgDistances, 
+        names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), 
+        xlab = "Cities",
+        ylab = "Distance in Meters (m)", 
+        main = "Average Distance between 5 stores", 
+        col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
+ # Add legend to bar plot
+legend("topright",
        legend = c("Urban Cities", "Rural Cities"),
        fill = c("#1b98e0", "#111111"))
 
-# Vehicles (by county)
-
+# total average distances histogram - How does store distance behave for all of Utah?
+lattice::histogram(totalAvgDistances, breaks = 10,
+                   main = paste("Total Average Distances Histogram"),
+                   xlab = "Store Distance in Meters")
 ```
 
 
 ```{r}
-# slc store types
-saltlakecityOrganicStoreType<-(saltlakecitydata[which(saltlakecitydata$store.type == 'Organic Grocery Store'),6])
-saltlakecityGrocStoreType<-(saltlakecitydata[which(saltlakecitydata$store.type == 'Grocery Store'),6])
-saltlakecityConStoreType<-(saltlakecitydata[which(saltlakecitydata$store.type == 'Convenience Store'),6])
-saltlakecityTotalStoreTypes=c(length(saltlakecityOrganicStoreType), length(saltlakecityGrocStoreType), length(saltlakecityConStoreType))
+# Store total number of store types per city
+saltlakecityTotalStoreTypes <- c(length(saltlakecitydata[which(saltlakecitydata$store.type == 'Organic Grocery Store'),6]), 
+                                 length(saltlakecitydata[which(saltlakecitydata$store.type == 'Grocery Store'),6]), 
+                                 length(saltlakecitydata[which(saltlakecitydata$store.type == 'Convenience Store'),6]))
 
-# provo store types
-provoOrganicStoreType<-(provodata[which(provodata$store.type == 'Organic Grocery Store'),6])
-provoGrocStoreType<-(provodata[which(provodata$store.type == 'Grocery Store'),6])
-provoConStoreType<-(provodata[which(provodata$store.type == 'Convenience Store'),6])
-provoTotalStoreTypes=c(length(provoOrganicStoreType), length(provoGrocStoreType), length(provoConStoreType))
+provoTotalStoreTypes <- c(length(provodata[which(provodata$store.type == 'Organic Grocery Store'),6]),
+                          length(provodata[which(provodata$store.type == 'Grocery Store'),6]),
+                          length(provodata[which(provodata$store.type == 'Convenience Store'),6]))
 
-# southjordan store types
-southjordanOrganicStoreType<-(southjordandata[which(southjordandata$store.type == 'Organic Grocery Store'),6])
-southjordanGrocStoreType<-(southjordandata[which(southjordandata$store.type == 'Grocery Store'),6])
-southjordanConStoreType<-(southjordandata[which(southjordandata$store.type == 'Convenience Store'),6])
-southjordanTotalStoreTypes=c(length(southjordanOrganicStoreType), length(southjordanGrocStoreType), length(southjordanConStoreType))
+southjordanTotalStoreTypes <- c(length(southjordandata[which(southjordandata$store.type == 'Organic Grocery Store'),6]), 
+                                length(southjordandata[which(southjordandata$store.type == 'Grocery Store'),6]), 
+                                length(southjordandata[which(southjordandata$store.type == 'Convenience Store'),6]))
 
-# orem store types
-oremOrganicStoreType<-(oremdata[which(oremdata$store.type == 'Organic Grocery Store'),6])
-oremGrocStoreType<-(oremdata[which(oremdata$store.type == 'Grocery Store'),6])
-oremConStoreType<-(oremdata[which(oremdata$store.type == 'Convenience Store'),6])
-oremTotalStoreTypes=c(length(oremOrganicStoreType), length(oremGrocStoreType), length(oremConStoreType))
+oremTotalStoreTypes <- c(length(oremdata[which(oremdata$store.type == 'Organic Grocery Store'),6]), 
+                         length(oremdata[which(oremdata$store.type == 'Grocery Store'),6]), 
+                         length(oremdata[which(oremdata$store.type == 'Convenience Store'),6]))
 
-# logan store types
-loganOrganicStoreType<-(logandata[which(logandata$store.type == 'Organic Grocery Store'),6])
-loganGrocStoreType<-(logandata[which(logandata$store.type == 'Grocery Store'),6])
-loganConStoreType<-(logandata[which(logandata$store.type == 'Convenience Store'),6])
-loganTotalStoreTypes=c(length(loganOrganicStoreType), length(loganGrocStoreType), length(loganConStoreType))
+loganTotalStoreTypes <- c(length(logandata[which(logandata$store.type == 'Organic Grocery Store'),6]), 
+                          length(logandata[which(logandata$store.type == 'Grocery Store'),6]), 
+                          length(logandata[which(logandata$store.type == 'Convenience Store'),6]))
 
-# wellington store types
-wellingtonOrganicStoreType<-(wellingtondata[which(wellingtondata$store.type == 'Organic Grocery Store'),6])
-wellingtonGrocStoreType<-(wellingtondata[which(wellingtondata$store.type == 'Grocery Store'),6])
-wellingtonConStoreType<-(wellingtondata[which(wellingtondata$store.type == 'Convenience Store'),6])
-wellingtonTotalStoreTypes=c(length(wellingtonOrganicStoreType), length(wellingtonGrocStoreType), length(wellingtonConStoreType))
+wellingtonTotalStoreTypes <- c(length(wellingtondata[which(wellingtondata$store.type == 'Organic Grocery Store'),6]), 
+                               length(wellingtondata[which(wellingtondata$store.type == 'Grocery Store'),6]), 
+                               length(wellingtondata[which(wellingtondata$store.type == 'Convenience Store'),6]))
 
-# morgan store types
-morganOrganicStoreType<-(morgandata[which(morgandata$store.type == 'Organic Grocery Store'),6])
-morganGrocStoreType<-(morgandata[which(morgandata$store.type == 'Grocery Store'),6])
-morganConStoreType<-(morgandata[which(morgandata$store.type == 'Convenience Store'),6])
-morganTotalStoreTypes=c(length(morganOrganicStoreType), length(morganGrocStoreType), length(morganConStoreType))
+morganTotalStoreTypes <- c(length(morgandata[which(morgandata$store.type == 'Organic Grocery Store'),6]), 
+                           length(morgandata[which(morgandata$store.type == 'Grocery Store'),6]), 
+                           length(morgandata[which(morgandata$store.type == 'Convenience Store'),6]))
 
-# farmington store types
-farmingtonOrganicStoreType<-(farmingtondata[which(farmingtondata$store.type == 'Organic Grocery Store'),6])
-farmingtonGrocStoreType<-(farmingtondata[which(farmingtondata$store.type == 'Grocery Store'),6])
-farmingtonConStoreType<-(farmingtondata[which(farmingtondata$store.type == 'Convenience Store'),6])
-farmingtonTotalStoreTypes=c(length(farmingtonOrganicStoreType), length(farmingtonGrocStoreType), length(farmingtonConStoreType))
+farmingtonTotalStoreTypes <- c(length(farmingtondata[which(farmingtondata$store.type == 'Organic Grocery Store'),6]), 
+                               length(farmingtondata[which(farmingtondata$store.type == 'Grocery Store'),6]), 
+                               length(farmingtondata[which(farmingtondata$store.type == 'Convenience Store'),6]))
 
-# roosevelt store types
-rooseveltOrganicStoreType<-(rooseveltdata[which(rooseveltdata$store.type == 'Organic Grocery Store'),6])
-rooseveltGrocStoreType<-(rooseveltdata[which(rooseveltdata$store.type == 'Grocery Store'),6])
-rooseveltConStoreType<-(rooseveltdata[which(rooseveltdata$store.type == 'Convenience Store'),6])
-rooseveltTotalStoreTypes=c(length(rooseveltOrganicStoreType), length(rooseveltGrocStoreType), length(rooseveltConStoreType))
+rooseveltTotalStoreTypes <- c(length(rooseveltdata[which(rooseveltdata$store.type == 'Organic Grocery Store'),6]), 
+                              length(rooseveltdata[which(rooseveltdata$store.type == 'Grocery Store'),6]), 
+                              length(rooseveltdata[which(rooseveltdata$store.type == 'Convenience Store'),6]))
 
-# woodscross store types
-woodscrossOrganicStoreType<-(woodscrossdata[which(woodscrossdata$store.type == 'Organic Grocery Store'),6])
-woodscrossGrocStoreType<-(woodscrossdata[which(woodscrossdata$store.type == 'Grocery Store'),6])
-woodscrossConStoreType<-(woodscrossdata[which(woodscrossdata$store.type == 'Convenience Store'),6])
-woodscrossTotalStoreTypes=c(length(woodscrossOrganicStoreType), length(woodscrossGrocStoreType), length(woodscrossConStoreType))
+woodscrossTotalStoreTypes <- c(length(woodscrossdata[which(woodscrossdata$store.type == 'Organic Grocery Store'),6]), 
+                               length(woodscrossdata[which(woodscrossdata$store.type == 'Grocery Store'),6]), 
+                               length(woodscrossdata[which(woodscrossdata$store.type == 'Convenience Store'),6]))
 
 
-# combine two vectors using cbind 
-# function
-totalStoreTypes=cbind(saltlakecityTotalStoreTypes,provoTotalStoreTypes, southjordanTotalStoreTypes, oremTotalStoreTypes, loganTotalStoreTypes, wellingtonTotalStoreTypes, morganTotalStoreTypes, farmingtonTotalStoreTypes, rooseveltTotalStoreTypes, woodscrossTotalStoreTypes)
-  
-
-barplot(totalStoreTypes,beside=T, names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), xlab = "Cities",
-ylab = "Stores", main = "Store Types found in each city", col=c("#1b98e0", "#111111", "#aaaaaa"), las = 3)
-
-legend("topright",                                    # Add legend to barplot
+# combine vectors using c bind function
+totalStoreTypes <- cbind(saltlakecityTotalStoreTypes, provoTotalStoreTypes, southjordanTotalStoreTypes, oremTotalStoreTypes, 
+                         loganTotalStoreTypes, wellingtonTotalStoreTypes, morganTotalStoreTypes, farmingtonTotalStoreTypes, 
+                         rooseveltTotalStoreTypes, woodscrossTotalStoreTypes)
+# plot total store types
+barplot(totalStoreTypes , beside=T, 
+        names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), 
+        xlab = "Cities",
+        ylab = "Stores", 
+        main = "Store Types Found in Each City", 
+        col=c("#1b98e0", "#111111", "#aaaaaa"), las = 3)
+# add legend to bar plot
+legend("topright",
        legend = c("Organic Grocery Store", "Grocery Store", "Convenience Store"),
        fill = c("#1b98e0", "#111111", "#aaaaaa"))
-
-
-
 ```
 
 ## Confidence Interval on Distance between stores
+
+```{r}
+# 95% confidence level - How confident are we that the mean of our sample is an accurate representation of the true population?
+t.test(slcdist, conf.level = 0.95)
+t.test(logandist, conf.level = 0.95)
+t.test(provodist, conf.level = 0.95)
+t.test(oremdist, conf.level = 0.95)
+t.test(sjdist, conf.level = 0.95)
+t.test(farmingtondist, conf.level = 0.95)
+t.test(morgandist, conf.level = 0.95)
+t.test(wellingtondist, conf.level = 0.95)
+t.test(rooseveltdist, conf.level = 0.95)
+t.test(woodscrossdist, conf.level = 0.95)
+```
+
+
+
+
+
+
