@@ -11,34 +11,56 @@ output: html_document
 # https://cran.r-project.org/web/packages/geosphere/vignettes/geosphere.pdf
 library ("geosphere")
 library("ggplot2")
-
-# Data setup
-healthfooddata <- read.csv("healthfooddata.csv")
-saltlakecitydata <- healthfooddata[which(healthfooddata$city == 'Salt Lake City'),]
-provodata <- healthfooddata[which(healthfooddata$city == 'Provo'),]
-southjordandata <- healthfooddata[which(healthfooddata$city == 'South Jordan'),]
-oremdata <- healthfooddata[which(healthfooddata$city == 'Orem'),]
-logandata <- healthfooddata[which(healthfooddata$city == 'Logan'),]
-wellingtondata <- healthfooddata[which(healthfooddata$city == 'Wellington'),]
-morgandata <- healthfooddata[which(healthfooddata$city == 'Morgan'),]
-farmingtondata <- healthfooddata[which(healthfooddata$city == 'Farmington'),]
-rooseveltdata <- healthfooddata[which(healthfooddata$city == 'Roosevelt'),]
-woodscrossdata <- healthfooddata[which(healthfooddata$city == 'Woods Cross'),]
 ```
+
+# Introduction
+
+A food desert is an area that has limited access to affordable and nutritious food. These areas tend to be inhabited by low-income residents with reduced mobility, which makes them less attractive markets for large supermarket chains, causing the location to lack suppliers of fresh foods. Instead, processed food and food high in sugar and fats, which are known contributors to the proliferation of obesity in the US, are more readily available for consumption. In contrast, an area with higher access to supermarkets or vegetable shops with fresh foods is called a food oasis. The designation considers the type and the quality of food available to the population, in addition to the accessibility of the food through the size and the proximity of the food stores. In 2010, the United States Department of Agriculture reported that 23.5 million people in the US live in these "food deserts," low-income census tracts that are more than 1 mile (1609.34 meters) from a supermarket in urban or suburban areas and more than 10 miles (16093.4 meters) from a supermarket in rural areas. In this study, we aim to *explore to what extent food deserts exist in various cities throughout the state of Utah*. Understanding how to operationalize and analyze this question will also assist with gaining a greater understanding of whether and which of Utah's cities covered in this study may actually be determined as a food desert. Exploring these cities, we can also aim to answer the following questions:
+
+## Data Sources
+
+To answer this projects research question, we used store distance and store type data from Google Maps. Furthermore, we will also be interpreting population, median household income, and vehicle registration data from the US Census Bureau. More specifically, our data set includes variables for city, population, city type (urban or rural), store, store type, latitude and longitude, median household income, and number of total registered vehicles. The latitude and longitude points will be used to calculate distance between other stores by city. 
+
+## Data Collection and Methodology
+
+The methodology for the collection of data in this study was built around the availability of store and census data and the research question.
+
+## Initial Data Summaries
+
+To start analyzing the collected data, the csv files were read into RStudio.
+
+```{r}
+# read in data
+healthfooddata <- read.csv("healthfooddata.csv")
+# filter data
+slc_data <- healthfooddata[which(healthfooddata$city == 'Salt Lake City'),]
+provo_data <- healthfooddata[which(healthfooddata$city == 'Provo'),]
+sj_data <- healthfooddata[which(healthfooddata$city == 'South Jordan'),]
+orem_data <- healthfooddata[which(healthfooddata$city == 'Orem'),]
+logan_data <- healthfooddata[which(healthfooddata$city == 'Logan'),]
+wellington_data <- healthfooddata[which(healthfooddata$city == 'Wellington'),]
+morgan_data <- healthfooddata[which(healthfooddata$city == 'Morgan'),]
+farmington_data <- healthfooddata[which(healthfooddata$city == 'Farmington'),]
+roosevelt_data <- healthfooddata[which(healthfooddata$city == 'Roosevelt'),]
+woodscross_data <- healthfooddata[which(healthfooddata$city == 'Woods Cross'),]
+```
+
 
 ## Summary Statistics on Population
 
 ```{r}
-summary(saltlakecitydata)
-summary(provodata)
-summary(southjordandata)
-summary(oremdata)
-summary(logandata)
-summary(wellingtondata)
-summary(morgandata)
-summary(farmingtondata)
-summary(rooseveltdata)
-summary(woodscrossdata)
+summary(slc_data)
+summary(provo_data)
+summary(sj_data)
+summary(orem_data)
+summary(logan_data)
+summary(wellington_data)
+summary(morgan_data)
+summary(farmington_data)
+summary(roosevelt_data)
+summary(woodscross_data)
+
+head(healthfooddata)
 ```
 
 
@@ -46,9 +68,9 @@ Plotting City population and Median Household income
 
 ```{r}
 # population plot
-totalPopulations <- c(saltlakecitydata$population[1], provodata$population[1], southjordandata$population[1], oremdata$population[1],
-                      logandata$population[1], wellingtondata$population[1], morgandata$population[1], farmingtondata$population[1],
-                      rooseveltdata$population[1], woodscrossdata$population[1])
+totalPopulations <- c(slc_data$population[1], provo_data$population[1], sj_data$population[1], orem_data$population[1],
+                      logan_data$population[1], wellington_data$population[1], morgan_data$population[1], farmington_data$population[1],
+                      roosevelt_data$population[1], woodscross_data$population[1])
 barplot(totalPopulations, 
         names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), 
         xlab = "Cities",
@@ -60,10 +82,10 @@ legend("topright",                                    # Add legend to bar plot
        fill = c("#1b98e0", "#111111"))
 
 # median income plot
-totalMedianIncome <- c(saltlakecitydata$median.household.income[1], provodata$median.household.income[1], 
-                       southjordandata$median.household.income[1], oremdata$median.household.income[1], logandata$median.household.income[1], 
-                       wellingtondata$median.household.income[1], morgandata$median.household.income[1], farmingtondata$median.household.income[1], 
-                       rooseveltdata$median.household.income[1], woodscrossdata$median.household.income[1])
+totalMedianIncome <- c(slc_data$median.household.income[1], provo_data$median.household.income[1], 
+                       sj_data$median.household.income[1], orem_data$median.household.income[1], logan_data$median.household.income[1], 
+                       wellington_data$median.household.income[1], morgan_data$median.household.income[1], farmington_data$median.household.income[1], 
+                       roosevelt_data$median.household.income[1], woodscross_data$median.household.income[1])
 barplot(totalMedianIncome, 
         names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), 
         xlab = "Cities", 
@@ -84,39 +106,57 @@ legend("topright",                                    # Add legend to bar plot
 Store Distance
 
 ```{r}
-# Calculating average store distance from longitude and latitude for urban cities
+# Calculating average store distance for each city from longitude and latitude
 # Initialize distance arrays
 slcdist <- replicate(10,0)
 logandist <- replicate(10,0)
 provodist <- replicate(10,0)
 oremdist <- replicate(10,0)
 sjdist <- replicate(10,0)
+farmingtondist <- replicate(10,0)
+morgandist <- replicate(10,0)
+wellingtondist <- replicate(10,0)
+rooseveltdist <- replicate(10,0)
+woodscrossdist <- replicate(10,0)
 
 # Loop through and calculate distances between all store variations
-i = 0
-for (x in 1:5) {
-  nextStore = x + 1
+i = 0 # which index in distance arrays to change
+for (x in 1:5) { # for each store
+  nextStore = x + 1 # get index of the store to compare to
   if (nextStore == 6)
     next
-  for (y in nextStore:5) {
-    if (x != y) {
+  for (y in nextStore:5) { # calculate distance between other stores (that haven't already been calculated)
       i = i + 1
       
-      slcdist[i] <- distHaversine(c(saltlakecitydata$longitude[x], saltlakecitydata$latitude[x]),
-                           c(saltlakecitydata$longitude[y], saltlakecitydata$latitude[y]))
+      slcdist[i] <- distHaversine(c(slc_data$longitude[x], slc_data$latitude[x]),
+                           c(slc_data$longitude[y], slc_data$latitude[y]))
       
-      logandist[i] <- distHaversine(c(logandata$longitude[x], logandata$latitude[x]),
-                           c(logandata$longitude[y], logandata$latitude[y]))
+      logandist[i] <- distHaversine(c(logan_data$longitude[x], logan_data$latitude[x]),
+                           c(logan_data$longitude[y], logan_data$latitude[y]))
       
-      provodist[i] <- distHaversine(c(provodata$longitude[x], provodata$latitude[x]),
-                           c(provodata$longitude[y], provodata$latitude[y]))
+      provodist[i] <- distHaversine(c(provo_data$longitude[x], provo_data$latitude[x]),
+                           c(provo_data$longitude[y], provo_data$latitude[y]))
       
-      oremdist[i] <- distHaversine(c(oremdata$longitude[x], oremdata$latitude[x]),
-                           c(oremdata$longitude[y], oremdata$latitude[y]))
+      oremdist[i] <- distHaversine(c(orem_data$longitude[x], orem_data$latitude[x]),
+                           c(orem_data$longitude[y], orem_data$latitude[y]))
       
-      sjdist[i] <- distHaversine(c(southjordandata$longitude[x], southjordandata$latitude[x]),
-                           c(southjordandata$longitude[y], southjordandata$latitude[y]))
-    }
+      sjdist[i] <- distHaversine(c(sj_data$longitude[x], sj_data$latitude[x]),
+                           c(sj_data$longitude[y], sj_data$latitude[y]))
+      
+      farmingtondist[i] <- distHaversine(c(farmington_data$longitude[x], farmington_data$latitude[x]),
+                     c(farmington_data$longitude[y], farmington_data$latitude[y]))
+      
+      morgandist[i] <- distHaversine(c(morgan_data$longitude[x], morgan_data$latitude[x]),
+                           c(morgan_data$longitude[y], morgan_data$latitude[y]))
+            
+      wellingtondist[i] <- distHaversine(c(wellington_data$longitude[x], wellington_data$latitude[x]),
+                           c(wellington_data$longitude[y], wellington_data$latitude[y]))
+      
+      rooseveltdist[i] <- distHaversine(c(roosevelt_data$longitude[x], roosevelt_data$latitude[x]),
+                           c(roosevelt_data$longitude[y], roosevelt_data$latitude[y]))
+      
+      woodscrossdist[i] <- distHaversine(c(woodscross_data$longitude[x], woodscross_data$latitude[x]),
+                           c(woodscross_data$longitude[y], woodscross_data$latitude[y]))
   }
 }
 
@@ -126,46 +166,6 @@ loganavgdist = mean(logandist)
 provoavgdist = mean(provodist)
 oremavgdist = mean(oremdist)
 sjavgdist = mean(sjdist)
-```
-
-```{r}
-# Calculating average store distances from longitude and latitude for rural cities
-# Initialize distance arrays
-farmingtondist <- replicate(10,0)
-morgandist <- replicate(10,0)
-wellingtondist <- replicate(10,0)
-rooseveltdist <- replicate(10,0)
-woodscrossdist <- replicate(10,0)
-
-# Loop through and calculate distances between all store variations
-i = 0
-for (x in 1:5) {
-  nextStore = x + 1
-  if (nextStore == 6)
-    next
-  for (y in nextStore:5) {
-    if (x != y) {
-      i = i + 1
-      
-      farmingtondist[i] <- distHaversine(c(farmingtondata$longitude[x], farmingtondata$latitude[x]),
-                           c(farmingtondata$longitude[y], farmingtondata$latitude[y]))
-      
-      morgandist[i] <- distHaversine(c(morgandata$longitude[x], morgandata$latitude[x]),
-                           c(morgandata$longitude[y], morgandata$latitude[y]))
-            
-      wellingtondist[i] <- distHaversine(c(wellingtondata$longitude[x], wellingtondata$latitude[x]),
-                           c(wellingtondata$longitude[y], wellingtondata$latitude[y]))
-      
-      rooseveltdist[i] <- distHaversine(c(rooseveltdata$longitude[x], rooseveltdata$latitude[x]),
-                           c(rooseveltdata$longitude[y], rooseveltdata$latitude[y]))
-      
-      woodscrossdist[i] <- distHaversine(c(woodscrossdata$longitude[x], woodscrossdata$latitude[x]),
-                           c(woodscrossdata$longitude[y], woodscrossdata$latitude[y]))
-    }
-  }
-}
-
-# Calculate average distance
 farmingtonavgdist = mean(farmingtondist)
 morganavgdist = mean(morgandist)
 wellingtonavgdist = mean(wellingtondist)
@@ -173,72 +173,73 @@ rooseveltavgdist = mean(rooseveltdist)
 woodscrossavgdist = mean(woodscrossdist)
 ```
 
+
+
 ```{r}
 # store all average distances in a new array
-totalAvgDistances <- c(slcavgdist, provoavgdist, sjavgdist, oremavgdist, loganavgdist, wellingtonavgdist,
+all_avg_distances <- c(slcavgdist, provoavgdist, sjavgdist, oremavgdist, loganavgdist, wellingtonavgdist,
                      morganavgdist, farmingtonavgdist, rooseveltavgdist, woodscrossavgdist)
+all_avg_distances
 
 # distance plot
-barplot(totalAvgDistances, 
+barplot(all_avg_distances, 
         names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), 
         xlab = "Cities",
         ylab = "Distance in Meters (m)", 
-        main = "Average Distance between 5 stores", 
+        main = "Average Distance between stores", 
         col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
- # Add legend to bar plot
-legend("topright",
+legend("topright",  # Add legend to bar plot
        legend = c("Urban Cities", "Rural Cities"),
        fill = c("#1b98e0", "#111111"))
 
 # total average distances histogram - How does store distance behave for all of Utah?
-lattice::histogram(totalAvgDistances, breaks = 10,
+lattice::histogram(all_avg_distances, breaks = 10,
                    main = paste("Total Average Distances Histogram"),
-                   xlab = "Store Distance in Meters")
+                   xlab = "Store Distance in Meters (m)")
 ```
 
 
 ```{r}
 # Store total number of store types per city
-saltlakecityTotalStoreTypes <- c(length(saltlakecitydata[which(saltlakecitydata$store.type == 'Organic Grocery Store'),6]), 
-                                 length(saltlakecitydata[which(saltlakecitydata$store.type == 'Grocery Store'),6]), 
-                                 length(saltlakecitydata[which(saltlakecitydata$store.type == 'Convenience Store'),6]))
+saltlakecityTotalStoreTypes <- c(length(slc_data[which(slc_data$store.type == 'Organic Grocery Store'),6]), 
+                                 length(slc_data[which(slc_data$store.type == 'Grocery Store'),6]), 
+                                 length(slc_data[which(slc_data$store.type == 'Convenience Store'),6]))
 
-provoTotalStoreTypes <- c(length(provodata[which(provodata$store.type == 'Organic Grocery Store'),6]),
-                          length(provodata[which(provodata$store.type == 'Grocery Store'),6]),
-                          length(provodata[which(provodata$store.type == 'Convenience Store'),6]))
+provoTotalStoreTypes <- c(length(provo_data[which(provo_data$store.type == 'Organic Grocery Store'),6]),
+                          length(provo_data[which(provo_data$store.type == 'Grocery Store'),6]),
+                          length(provo_data[which(provo_data$store.type == 'Convenience Store'),6]))
 
-southjordanTotalStoreTypes <- c(length(southjordandata[which(southjordandata$store.type == 'Organic Grocery Store'),6]), 
-                                length(southjordandata[which(southjordandata$store.type == 'Grocery Store'),6]), 
-                                length(southjordandata[which(southjordandata$store.type == 'Convenience Store'),6]))
+southjordanTotalStoreTypes <- c(length(sj_data[which(sj_data$store.type == 'Organic Grocery Store'),6]), 
+                                length(sj_data[which(sj_data$store.type == 'Grocery Store'),6]), 
+                                length(sj_data[which(sj_data$store.type == 'Convenience Store'),6]))
 
-oremTotalStoreTypes <- c(length(oremdata[which(oremdata$store.type == 'Organic Grocery Store'),6]), 
-                         length(oremdata[which(oremdata$store.type == 'Grocery Store'),6]), 
-                         length(oremdata[which(oremdata$store.type == 'Convenience Store'),6]))
+oremTotalStoreTypes <- c(length(orem_data[which(orem_data$store.type == 'Organic Grocery Store'),6]), 
+                         length(orem_data[which(orem_data$store.type == 'Grocery Store'),6]), 
+                         length(orem_data[which(orem_data$store.type == 'Convenience Store'),6]))
 
-loganTotalStoreTypes <- c(length(logandata[which(logandata$store.type == 'Organic Grocery Store'),6]), 
-                          length(logandata[which(logandata$store.type == 'Grocery Store'),6]), 
-                          length(logandata[which(logandata$store.type == 'Convenience Store'),6]))
+loganTotalStoreTypes <- c(length(logan_data[which(logan_data$store.type == 'Organic Grocery Store'),6]), 
+                          length(logan_data[which(logan_data$store.type == 'Grocery Store'),6]), 
+                          length(logan_data[which(logan_data$store.type == 'Convenience Store'),6]))
 
-wellingtonTotalStoreTypes <- c(length(wellingtondata[which(wellingtondata$store.type == 'Organic Grocery Store'),6]), 
-                               length(wellingtondata[which(wellingtondata$store.type == 'Grocery Store'),6]), 
-                               length(wellingtondata[which(wellingtondata$store.type == 'Convenience Store'),6]))
+wellingtonTotalStoreTypes <- c(length(wellington_data[which(wellington_data$store.type == 'Organic Grocery Store'),6]), 
+                               length(wellington_data[which(wellington_data$store.type == 'Grocery Store'),6]), 
+                               length(wellington_data[which(wellington_data$store.type == 'Convenience Store'),6]))
 
-morganTotalStoreTypes <- c(length(morgandata[which(morgandata$store.type == 'Organic Grocery Store'),6]), 
-                           length(morgandata[which(morgandata$store.type == 'Grocery Store'),6]), 
-                           length(morgandata[which(morgandata$store.type == 'Convenience Store'),6]))
+morganTotalStoreTypes <- c(length(morgan_data[which(morgan_data$store.type == 'Organic Grocery Store'),6]), 
+                           length(morgan_data[which(morgan_data$store.type == 'Grocery Store'),6]), 
+                           length(morgan_data[which(morgan_data$store.type == 'Convenience Store'),6]))
 
-farmingtonTotalStoreTypes <- c(length(farmingtondata[which(farmingtondata$store.type == 'Organic Grocery Store'),6]), 
-                               length(farmingtondata[which(farmingtondata$store.type == 'Grocery Store'),6]), 
-                               length(farmingtondata[which(farmingtondata$store.type == 'Convenience Store'),6]))
+farmingtonTotalStoreTypes <- c(length(farmington_data[which(farmington_data$store.type == 'Organic Grocery Store'),6]), 
+                               length(farmington_data[which(farmington_data$store.type == 'Grocery Store'),6]), 
+                               length(farmington_data[which(farmington_data$store.type == 'Convenience Store'),6]))
 
-rooseveltTotalStoreTypes <- c(length(rooseveltdata[which(rooseveltdata$store.type == 'Organic Grocery Store'),6]), 
-                              length(rooseveltdata[which(rooseveltdata$store.type == 'Grocery Store'),6]), 
-                              length(rooseveltdata[which(rooseveltdata$store.type == 'Convenience Store'),6]))
+rooseveltTotalStoreTypes <- c(length(roosevelt_data[which(roosevelt_data$store.type == 'Organic Grocery Store'),6]), 
+                              length(roosevelt_data[which(roosevelt_data$store.type == 'Grocery Store'),6]), 
+                              length(roosevelt_data[which(roosevelt_data$store.type == 'Convenience Store'),6]))
 
-woodscrossTotalStoreTypes <- c(length(woodscrossdata[which(woodscrossdata$store.type == 'Organic Grocery Store'),6]), 
-                               length(woodscrossdata[which(woodscrossdata$store.type == 'Grocery Store'),6]), 
-                               length(woodscrossdata[which(woodscrossdata$store.type == 'Convenience Store'),6]))
-
+woodscrossTotalStoreTypes <- c(length(woodscross_data[which(woodscross_data$store.type == 'Organic Grocery Store'),6]), 
+                               length(woodscross_data[which(woodscross_data$store.type == 'Grocery Store'),6]), 
+                               length(woodscross_data[which(woodscross_data$store.type == 'Convenience Store'),6]))
 
 # combine vectors using c bind function
 totalStoreTypes <- cbind(saltlakecityTotalStoreTypes, provoTotalStoreTypes, southjordanTotalStoreTypes, oremTotalStoreTypes, 
@@ -274,6 +275,33 @@ t.test(woodscrossdist, conf.level = 0.95)
 ```
 
 
+```{r}
+# create data frame combining all dist
+all_distances <- data.frame(SLC = slcdist, LOGAN = logandist, PROVO = provodist, OREM = oremdist, SOUTHJORDAN = sjdist, 
+                            FARMINGTON = farmingtondist, MORGAN = morgandist, WELLINGTON = wellingtondist, 
+                            ROOSEVELT = rooseveltdist, WOODSCROSS = woodscrossdist)
+
+# calculate conf intervals between all cities store distances - How confident are we that one city actually has a larger between-store distance than another?
+all_distances_cis <- apply(all_distances, 1, function(x){t.test(x, conf.level = 0.95)})
+
+# check for overlap 
+df1 <- read.table(text = 
+" City	lowerci	Estimate	upperci
+SLC	392	1912.751	3433
+Logan	1838	4583.664	7392
+Provo	748	3607.293	6467
+Orem	459	3003.557	5548
+SouthJordan	1161	3857.936	6555
+Farmington	662	3537.668	6413
+Morgan	591	3263.311	5936
+Wellington	1462	4370.249	1285.814
+Roosevelt	1830	3844.588	5859
+WoodsCross	834	3067.96	6969                 
+", header = TRUE, as.is = TRUE)
+
+ggplot(df1, aes(x = City, y = Estimate, ymin = lowerci, ymax = upperci)) +
+  geom_pointrange()
+```
 
 
 
