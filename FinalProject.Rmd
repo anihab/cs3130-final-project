@@ -10,6 +10,7 @@ output: html_document
 # Geosphere (Required for calculating store distance)
 # https://cran.r-project.org/web/packages/geosphere/vignettes/geosphere.pdf
 library ("geosphere")
+library("ggplot2")
 
 # Data setup
 healthfooddata <- read.csv("healthfooddata.csv")
@@ -45,11 +46,24 @@ Plotting City population and Median Household income
 
 
 ```{r}
+
 # population plot
-barplot(c(saltlakecitydata$population[1], provodata$population[1], southjordandata$population[1], oremdata$population[1], logandata$population[1], wellingtondata$population[1], morgandata$population[1], farmingtondata$population[1], rooseveltdata$population[1], woodscrossdata$population[1]))
+barplot(c(saltlakecitydata$population[1], provodata$population[1], southjordandata$population[1], oremdata$population[1], logandata$population[1], wellingtondata$population[1], morgandata$population[1], farmingtondata$population[1], rooseveltdata$population[1], woodscrossdata$population[1]), names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), xlab = "Cities",
+ylab = "Number Of People", main = "Population Bar Plot", col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
+
+legend("topright",                                    # Add legend to barplot
+       legend = c("Urban Cities", "Rural Cities"),
+       fill = c("#1b98e0", "#111111"))
+
+
 
 # median income plot
-barplot(c(saltlakecitydata$median.household.income[1], provodata$median.household.income[1], southjordandata$median.household.income[1], oremdata$median.household.income[1], logandata$median.household.income[1], wellingtondata$median.household.income[1], morgandata$median.household.income[1], farmingtondata$median.household.income[1], rooseveltdata$median.household.income[1], woodscrossdata$median.household.income[1]))
+barplot(c(saltlakecitydata$median.household.income[1], provodata$median.household.income[1], southjordandata$median.household.income[1], oremdata$median.household.income[1], logandata$median.household.income[1], wellingtondata$median.household.income[1], morgandata$median.household.income[1], farmingtondata$median.household.income[1], rooseveltdata$median.household.income[1], woodscrossdata$median.household.income[1]), names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), xlab = "Cities",
+ylab = "Median Income by Dollar", main = "Medium Income Bar Plot", col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
+
+legend("topright",                                    # Add legend to barplot
+       legend = c("Urban Cities", "Rural Cities"),
+       fill = c("#1b98e0", "#111111"))
 
 # Vehicles (by county)
 
@@ -242,5 +256,96 @@ for (x in 1:5) {
 woodscrossavgdist = woodscrossavgdist / 10
 ```
 
+```{r}
+# distance plot
+barplot(c(slcavgdist, provoavgdist, southjordanavgdist, oremavgdist, loganavgdist, wellingtonavgdist, morganavgdist, farmingtonavgdist, rooseveltavgdist, woodscrossavgdist), names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), xlab = "Cities",
+ylab = "Distance in Meters (m)", main = "Average Distance between 5 stores", col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
+
+legend("topright",                                    # Add legend to barplot
+       legend = c("Urban Cities", "Rural Cities"),
+       fill = c("#1b98e0", "#111111"))
+
+# Vehicles (by county)
+
+```
+
+
+```{r}
+# slc store types
+saltlakecityOrganicStoreType<-(saltlakecitydata[which(saltlakecitydata$store.type == 'Organic Grocery Store'),6])
+saltlakecityGrocStoreType<-(saltlakecitydata[which(saltlakecitydata$store.type == 'Grocery Store'),6])
+saltlakecityConStoreType<-(saltlakecitydata[which(saltlakecitydata$store.type == 'Convenience Store'),6])
+saltlakecityTotalStoreTypes=c(length(saltlakecityOrganicStoreType), length(saltlakecityGrocStoreType), length(saltlakecityConStoreType))
+
+# provo store types
+provoOrganicStoreType<-(provodata[which(provodata$store.type == 'Organic Grocery Store'),6])
+provoGrocStoreType<-(provodata[which(provodata$store.type == 'Grocery Store'),6])
+provoConStoreType<-(provodata[which(provodata$store.type == 'Convenience Store'),6])
+provoTotalStoreTypes=c(length(provoOrganicStoreType), length(provoGrocStoreType), length(provoConStoreType))
+
+# southjordan store types
+southjordanOrganicStoreType<-(southjordandata[which(southjordandata$store.type == 'Organic Grocery Store'),6])
+southjordanGrocStoreType<-(southjordandata[which(southjordandata$store.type == 'Grocery Store'),6])
+southjordanConStoreType<-(southjordandata[which(southjordandata$store.type == 'Convenience Store'),6])
+southjordanTotalStoreTypes=c(length(southjordanOrganicStoreType), length(southjordanGrocStoreType), length(southjordanConStoreType))
+
+# orem store types
+oremOrganicStoreType<-(oremdata[which(oremdata$store.type == 'Organic Grocery Store'),6])
+oremGrocStoreType<-(oremdata[which(oremdata$store.type == 'Grocery Store'),6])
+oremConStoreType<-(oremdata[which(oremdata$store.type == 'Convenience Store'),6])
+oremTotalStoreTypes=c(length(oremOrganicStoreType), length(oremGrocStoreType), length(oremConStoreType))
+
+# logan store types
+loganOrganicStoreType<-(logandata[which(logandata$store.type == 'Organic Grocery Store'),6])
+loganGrocStoreType<-(logandata[which(logandata$store.type == 'Grocery Store'),6])
+loganConStoreType<-(logandata[which(logandata$store.type == 'Convenience Store'),6])
+loganTotalStoreTypes=c(length(loganOrganicStoreType), length(loganGrocStoreType), length(loganConStoreType))
+
+# wellington store types
+wellingtonOrganicStoreType<-(wellingtondata[which(wellingtondata$store.type == 'Organic Grocery Store'),6])
+wellingtonGrocStoreType<-(wellingtondata[which(wellingtondata$store.type == 'Grocery Store'),6])
+wellingtonConStoreType<-(wellingtondata[which(wellingtondata$store.type == 'Convenience Store'),6])
+wellingtonTotalStoreTypes=c(length(wellingtonOrganicStoreType), length(wellingtonGrocStoreType), length(wellingtonConStoreType))
+
+# morgan store types
+morganOrganicStoreType<-(morgandata[which(morgandata$store.type == 'Organic Grocery Store'),6])
+morganGrocStoreType<-(morgandata[which(morgandata$store.type == 'Grocery Store'),6])
+morganConStoreType<-(morgandata[which(morgandata$store.type == 'Convenience Store'),6])
+morganTotalStoreTypes=c(length(morganOrganicStoreType), length(morganGrocStoreType), length(morganConStoreType))
+
+# farmington store types
+farmingtonOrganicStoreType<-(farmingtondata[which(farmingtondata$store.type == 'Organic Grocery Store'),6])
+farmingtonGrocStoreType<-(farmingtondata[which(farmingtondata$store.type == 'Grocery Store'),6])
+farmingtonConStoreType<-(farmingtondata[which(farmingtondata$store.type == 'Convenience Store'),6])
+farmingtonTotalStoreTypes=c(length(farmingtonOrganicStoreType), length(farmingtonGrocStoreType), length(farmingtonConStoreType))
+
+# roosevelt store types
+rooseveltOrganicStoreType<-(rooseveltdata[which(rooseveltdata$store.type == 'Organic Grocery Store'),6])
+rooseveltGrocStoreType<-(rooseveltdata[which(rooseveltdata$store.type == 'Grocery Store'),6])
+rooseveltConStoreType<-(rooseveltdata[which(rooseveltdata$store.type == 'Convenience Store'),6])
+rooseveltTotalStoreTypes=c(length(rooseveltOrganicStoreType), length(rooseveltGrocStoreType), length(rooseveltConStoreType))
+
+# woodscross store types
+woodscrossOrganicStoreType<-(woodscrossdata[which(woodscrossdata$store.type == 'Organic Grocery Store'),6])
+woodscrossGrocStoreType<-(woodscrossdata[which(woodscrossdata$store.type == 'Grocery Store'),6])
+woodscrossConStoreType<-(woodscrossdata[which(woodscrossdata$store.type == 'Convenience Store'),6])
+woodscrossTotalStoreTypes=c(length(woodscrossOrganicStoreType), length(woodscrossGrocStoreType), length(woodscrossConStoreType))
+
+
+# combine two vectors using cbind 
+# function
+totalStoreTypes=cbind(saltlakecityTotalStoreTypes,provoTotalStoreTypes, southjordanTotalStoreTypes, oremTotalStoreTypes, loganTotalStoreTypes, wellingtonTotalStoreTypes, morganTotalStoreTypes, farmingtonTotalStoreTypes, rooseveltTotalStoreTypes, woodscrossTotalStoreTypes)
+  
+
+barplot(totalStoreTypes,beside=T, names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), xlab = "Cities",
+ylab = "Stores", main = "Store Types found in each city", col=c("#1b98e0", "#111111", "#aaaaaa"), las = 3)
+
+legend("topright",                                    # Add legend to barplot
+       legend = c("Organic Grocery Store", "Grocery Store", "Convenience Store"),
+       fill = c("#1b98e0", "#111111", "#aaaaaa"))
+
+
+
+```
 
 ## Confidence Interval on Distance between stores
