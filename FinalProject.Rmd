@@ -7,7 +7,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 # Installed/Required Packages 
-
 # Geosphere (Required for calculating store distance)
 # https://cran.r-project.org/web/packages/geosphere/vignettes/geosphere.pdf
 library ("geosphere")
@@ -62,57 +61,186 @@ barplot(c(saltlakecitydata$median.household.income[1], provodata$median.househol
 Store Distance
 
 ```{r}
-# Calculating store distances from longitude and latitude
+# Calculating salt lake city average store distance from longitude and latitude
 slcavgdist = 0
 for (x in 1:5) {
-    temp = x + 1;
-    if (temp != 6) {
-      for (y in temp:5) {
-        if (y == x) {
-          break;
-        } else {
-          saltlakestoredistance <- distm(c(saltlakecitydata$longitude[x], saltlakecitydata$latitude[x]), c(saltlakecitydata$longitude[y], saltlakecitydata$latitude[y]), fun = distHaversine);
-          slcavgdist = slcavgdist + saltlakestoredistance;
-        }
-      }
+  i = x + 1
+  if (i == 6)
+    next
+  for (y in i:5) {
+    if (x != y) {
+      temp = distHaversine(c(saltlakecitydata$longitude[x], saltlakecitydata$latitude[x]),
+                           c(saltlakecitydata$longitude[y], saltlakecitydata$latitude[y]))
+      slcavgdist = temp + slcavgdist
     }
+  }
 }
-# average distance between stores in meters
-slcavgdist = slcavgdist / 10;
+slcavgdist = slcavgdist / 10
+```
 
 
+```{r}
+# Calculating logan average store distance from longitude and latitude
 loganavgdist = 0
 for (x in 1:5) {
-    temp = x + 1;
-    if (temp != 6) {
-      for (y in temp:5) {
-        if (y == x) {
-          break;
-        } else {
-          loganstoredistance <- distm(c(logandata$longitude[x], logandata$latitude[x]), c(logandata$longitude[y], logandata$latitude[y]), fun = distHaversine);
-          loganavgdist = loganavgdist + loganstoredistance;
-        }
-      }
+  i = x + 1
+  if (i == 6)
+    next
+  for (y in i:5) {
+    if (x != y) {
+      temp = distHaversine(c(logandata$longitude[x], logandata$latitude[x]),
+                           c(logandata$longitude[y], logandata$latitude[y]))
+      loganavgdist = temp + loganavgdist
     }
+  }
 }
-# average distance between stores in meters
-loganavgdist = loganavgdist / 10;
+loganavgdist = loganavgdist / 10
+```
 
+```{r}
+# Calculating provo average store distance from longitude and latitude
+provoavgdist = 0
+for (x in 1:5) {
+  i = x + 1
+  if (i == 6)
+    next
+  for (y in i:5) {
+    if (x != y) {
+      temp = distHaversine(c(provodata$longitude[x], provodata$latitude[x]),
+                           c(provodata$longitude[y], provodata$latitude[y]))
+      provoavgdist = temp + provoavgdist
+    }
+  }
+}
+provoavgdist = provoavgdist / 10
 ```
 
 
 ```{r}
-slcdistances <- lapply(distm(c(saltlakecitydata$longitude[x], saltlakecitydata$latitude[x]), c(saltlakecitydata$longitude[y], saltlakecitydata$latitude[y]), fun = distHaversine))
-
+# Calculating orem average store distance from longitude and latitude
+oremavgdist = 0
+for (x in 1:5) {
+  i = x + 1
+  if (i == 6)
+    next
+  for (y in i:5) {
+    if (x != y) {
+      temp = distHaversine(c(oremdata$longitude[x], oremdata$latitude[x]),
+                           c(oremdata$longitude[y], oremdata$latitude[y]))
+      oremavgdist = temp + oremavgdist
+    }
+  }
+}
+oremavgdist = oremavgdist / 10
 ```
-
-Store Type
 
 ```{r}
+# Calculating farmington average store distance from longitude and latitude
+farmingtonavgdist = 0
+for (x in 1:5) {
+  i = x + 1
+  if (i == 6)
+    next
+  for (y in i:5) {
+    if (x != y) {
+      temp = distHaversine(c(farmingtondata$longitude[x], farmingtondata$latitude[x]),
+                           c(farmingtondata$longitude[y], farmingtondata$latitude[y]))
+      farmingtonavgdist = temp + farmingtonavgdist
+    }
+  }
+}
+farmingtonavgdist = farmingtonavgdist / 10
+```
 
+```{r}
+# Calculating morgan average store distance from longitude and latitude
+morganavgdist = 0
+for (x in 1:5) {
+  i = x + 1
+  if (i == 6)
+    next
+  for (y in i:5) {
+    if (x != y) {
+      temp = distHaversine(c(morgandata$longitude[x], morgandata$latitude[x]),
+                           c(morgandata$longitude[y], morgandata$latitude[y]))
+      morganavgdist = temp + morganavgdist
+    }
+  }
+}
+morganavgdist = morganavgdist / 10
+```
 
+```{r}
+# Calculating roosevelt average store distance from longitude and latitude
+rooseveltavgdist = 0
+for (x in 1:5) {
+  i = x + 1
+  if (i == 6)
+    next
+  for (y in i:5) {
+    if (x != y) {
+      temp = distHaversine(c(rooseveltdata$longitude[x], rooseveltdata$latitude[x]),
+                           c(rooseveltdata$longitude[y], rooseveltdata$latitude[y]))
+      rooseveltavgdist = temp + rooseveltavgdist
+    }
+  }
+}
+rooseveltavgdist = rooseveltavgdist / 10
+```
+
+```{r}
+# Calculating southjordan average store distance from longitude and latitude
+southjordanavgdist = 0
+for (x in 1:5) {
+  i = x + 1
+  if (i == 6)
+    next
+  for (y in i:5) {
+    if (x != y) {
+      temp = distHaversine(c(southjordandata$longitude[x], southjordandata$latitude[x]),
+                           c(southjordandata$longitude[y], southjordandata$latitude[y]))
+      southjordanavgdist = temp + southjordanavgdist
+    }
+  }
+}
+southjordanavgdist = southjordanavgdist / 10
+```
+
+```{r}
+# Calculating wellington average store distance from longitude and latitude
+wellingtonavgdist = 0
+for (x in 1:5) {
+  i = x + 1
+  if (i == 6)
+    next
+  for (y in i:5) {
+    if (x != y) {
+      temp = distHaversine(c(wellingtondata$longitude[x], wellingtondata$latitude[x]),
+                           c(wellingtondata$longitude[y], wellingtondata$latitude[y]))
+      wellingtonavgdist = temp + wellingtonavgdist
+    }
+  }
+}
+wellingtonavgdist = wellingtonavgdist / 10
+```
+
+```{r}
+# Calculating woodscross average store distance from longitude and latitude
+woodscrossavgdist = 0
+for (x in 1:5) {
+  i = x + 1
+  if (i == 6)
+    next
+  for (y in i:5) {
+    if (x != y) {
+      temp = distHaversine(c(woodscrossdata$longitude[x], woodscrossdata$latitude[x]),
+                           c(woodscrossdata$longitude[y], woodscrossdata$latitude[y]))
+      woodscrossavgdist = temp + woodscrossavgdist
+    }
+  }
+}
+woodscrossavgdist = woodscrossavgdist / 10
 ```
 
 
-
-## COnfidence Interval on Distance between stores
+## Confidence Interval on Distance between stores
