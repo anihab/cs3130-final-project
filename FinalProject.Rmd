@@ -129,6 +129,8 @@ legend("topright",                                    # Add legend to bar plot
 
 Here, we can see much more "uniform" distribution of the median household income variable. One might expect that cities classified as rural would have a much lower median household income than cities classified as urban. However, according to the bar plot of our data, this is not the case. We can see much higher values of median household income in some rural cities compared to large urban ones- such as Farmington versus SLC. One reason this could be is because there are a lot of neighboring cities to Salt Lake City. People could be living in one city but commuting to another for work- however, the median household income variable does not take such factors into account. It is important to note that poverty rates may also affect this statistic; cities with higher populations may have a greater number of people that are below the poverty line. This would bring down the total median income of that city, and this statistic and this study does not take poverty rates into account.
 
+Looking into median household income can provide further insight into store accessibility. If cities on average are making much less than other cities, we can infer that the residents likely have fewer access to transportation resources. This also influences more convenience stores and less supermarket and grocery stores for that area. Median Household income is a possible variable that contributes to store accessibility and store types inherently affecting food deserts. 
+
 As the definition of a food desert explains the distance between grocery stores in a certain area, the next step was to calculate the average distance between stores. This was completed through use of the Geosphere R package (https://cran.r-project.org/web/packages/geosphere/vignettes/geosphere.pdf) as it contains methods to calculate the distance between two latitude-longitude points. The average distance was calculated with the following arithmetic:
 
 ```{r}
@@ -177,7 +179,7 @@ for (x in 1:5) { # for each store
 }
 ```
 
-To calculate the average distance between each store variation per city (distance between store 1 and 2, distance between store 1 and 3, and so on), we decided to implement a nested for-loop. The outer loop iterates through each store and the inner loop iterates through all stores left to calculate the distance between. By this we mean that if we have already calculated the distance between store 1 and store 2, we do not want to calculate the distance between store 2 and store 1 as that would be a duplicate data point. Inside the inner loop, we calculate the distance between the two current stores with the `distHaversine` function. This function calculates the shortest distance between 2 points- in this case, latitude and longitude points. The function returns the calculated distance in meters. We added each calculated distance per city into distance arrays by city, so that we may access the distances at later points in time and calculate relevant sample statistics.
+To calculate the average distance between each store variation per city (distance between store 1 and 2, distance between store 1 and 3, and so on), we decided to implement a nested for-loop. The outer loop iterates through each store and the inner loop iterates through all stores left to calculate the distance between. By this we mean that if we have already calculated the distance between store 1 and store 2, we do not want to calculate the distance between store 2 and store 1 as that would be a duplicate data point. Inside the inner loop, we calculate the distance between the two current stores with the `distHaversine` function. This function calculates the shortest distance between 2 points- in this case, latitude and longitude points. The function returns the calculated distance in meters. We added each calculated distance per city into distance arrays by city, so that we may access the distances at later points in time and calculate relevant sample statistics. It is important to note that these distances do not account for any road accessibility or distances through roads, but rather uses global coordinates to find closest distance between two stores. Ideally, this study would utilize roads to figure out store distances, but unfortunately, this would be too time-consuming for our study.
 
 To view these calculated distances, we created an array and plot of the means:
 
@@ -185,21 +187,33 @@ To view these calculated distances, we created an array and plot of the means:
 # store all average distances in a new array
 all_avg_distances <- c(mean(slcdist), mean(logandist), mean(provodist), mean(oremdist), mean(sjdist), mean(farmingtondist),
                       mean(wellingtondist), mean(morgandist), mean(rooseveltdist), mean(woodscrossdist))
-all_avg_distances
 
 # distance plot
 barplot(all_avg_distances, 
-        names.arg = c("SLC", "Provo", "South Jordan", "Orem", "Logan", "Wellington", "Morgan", "Farmington", "Roosevelt", "Woods Cross"), 
+        names.arg = c("SLC", "Logan", "Provo", "Orem", "S. Jordan", "Farmington", "Wellington", "Morgan", "Roosevelt", "Woods Cross"), 
         xlab = "Cities",
         ylab = "Distance in Meters (m)", 
-        main = "Average Distance between stores", 
+        main = "Average Distance Between Stores In Cities", 
         col=c("#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0", "#1b98e0",  "#111111", "#111111", "#111111", "#111111", "#111111"), las = 3)
 legend("topright",  # add legend to bar plot
        legend = c("Urban Cities", "Rural Cities"),
        fill = c("#1b98e0", "#111111"))
 ```
 
-*****************************************************************
+As we can see in the Average Distance Between Stores In Cities plot above, the urban cities have similar average distances, where as the rural cities defer by several thousands in store distances. Furthermore, in rural cities, Farmington and Wellington are well over 6000 meters in average distance, where as the others are below the urban areas. Rural areas are smaller in area and so therefore the stores in the cities would be more dense. Which is why we can see Morgan, Roosevelt, and Woods cross have lower distance, but there also could rural areas where overall areas are larger than urban cities due to the nature of farming lands or just more land area per house. This could explain why we see a higher average distance between all types of stores for rural areas in Wellington and Farmington. Wellington and Farmington are bigger in area than the other rural cities. When we calculate average store distances for rural and urban, we get the following:
+
+Average Urban Store Distance:
+```{r}
+urbancitiesdist<- (mean(slcdist) + mean(logandist) + mean(provodist) + mean(oremdist) + mean(sjdist))/5
+urbancitiesdist
+```
+Average Rural Store Distance:
+```{r}
+ruralcitiesdist<- (mean(farmingtondist)+ mean(wellingtondist) + mean(morgandist)+ mean(rooseveltdist)+ mean(woodscrossdist))/5
+ruralcitiesdist
+```
+
+As calculated, urban average store distances are fewer by 500 meters compared to rural store distances. By looking at store average distances between the others, we can determine how dense the stores are in the area from our sample. This helps us give further insight into store accessibility, and with our data, we can see that urban cities have a more consistent distance, where as rural areas are more variable.
 
 Lastly on the topic of average distance summaries, we created a histogram:
 
@@ -207,8 +221,10 @@ Lastly on the topic of average distance summaries, we created a histogram:
 # total average distances histogram - How does store distance behave for all of Utah?
 lattice::histogram(all_avg_distances, breaks = 10,
                    main = paste("Total Average Distances Histogram"),
-                   xlab = "Store Distance in Meters (m)")
+                   xlab = "Store Distance in Meters (m)", col = "#1b98e0")
 ```
+From the plot, there is a higher frequency of stores that have a distance around 2000-4000 meters. This is above the CDC's distance definition for food deserts in urban cities, however, none of the distances are above the definition for food deserts in rural cities. It is important to note that we calculated the distances between all types of stores including convenience stores, but the definition for food deserts only counts super markets/grocery stores, so we decided it is important to look at the distribution of stores types as well for each city.
+
 
 *****************************************************************
 
@@ -272,6 +288,10 @@ legend("topright",
        legend = c("Organic Grocery Store", "Grocery Store", "Convenience Store"),
        fill = c("#1b98e0", "#111111", "#aaaaaa"))
 ```
+In this plot, we can see more organic grocery stores in urban cities, but many more convenience stores in rural cities. The data we did sample shows there’s more grocery stores in general in urban cities, as well as organic grocery stores. In rural cities we found that there was a lot more convenience stores in the data we did sample. This is somewhat representative of the population of rural and urban cities. Looking at which ones are more frequent in the area helps us determine which type of store people are most likely more frequently going to (because of “convenience”). The distance between stores we observed included convenience stores. Morgan and Roosevelt have the highest number of convenience stores as observed in the plot, but when we bring in distances, we saw in our average distance plot that Morgan and Roosevelt also have the smallest average store distances out of all cities. Salt lake city and South Jordan in our sample had no convenience stores hence suggesting that the store type in these two cities have options compared to others.
+
+Store types help us look at what is available in the area. By looking to see if a city has more convience stores or grocery stores, we can get insight into what is mostly accessible in the area. A higher number of convenience stores also contribute to food deserts.
+
 
 *****************************************************************
 
