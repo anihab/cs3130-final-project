@@ -1,7 +1,7 @@
 ---
-title: "FinalProject"
-author: "Kishan Thambu"
-date: "4/18/2022"
+title: "Final Project"
+author: "Kishan Thambu and Anisa Habib"
+date: "5/4/2022"
 output: html_document
 ---
 
@@ -15,7 +15,7 @@ library("ggplot2")
 
 # Introduction
 
-A food desert is an area that has limited access to affordable and nutritious food. These areas tend to be inhabited by low-income residents with reduced mobility, which makes them less attractive markets for large supermarket chains, causing the location to lack suppliers of fresh foods. Instead, processed food and food high in sugar and fats, which are known contributors to the proliferation of obesity in the US, are more readily available for consumption. In contrast, an area with higher access to supermarkets or vegetable shops with fresh foods is called a food oasis. The designation considers the type and the quality of food available to the population, in addition to the accessibility of the food through the size and the proximity of the food stores. In 2010, the United States Department of Agriculture reported that 23.5 million people in the US live in these "food deserts," low-income census tracts that are more than 1 mile (1609.34 meters) from a supermarket in urban or suburban areas and more than 10 miles (16093.4 meters) from a supermarket in rural areas. In this study, we aim to *explore to what extent food deserts exist in various cities throughout the state of Utah*. Understanding how to operationalize and analyze this question will also assist with gaining a greater understanding of whether and which of Utah's cities covered in this study may actually be determined as a food desert. Exploring these cities, we can also aim to answer the following questions:
+For several decades, health officials have encouraged people to eat more nutritious foods like fruits and vegetables and avoid junk or processed foods like chips and fast food in order to maintain a healthy diet and prevent several diseases and other health issues. However, for many families in the United States, access to these healthy foods are hard to even access. This lack of access to healthy food resources is just one aspect of what is known as a "food desert". A food desert is an area that has limited access to affordable and nutritious food. These areas tend to be inhabited by low-income residents with reduced mobility, which makes them less attractive markets for large supermarket chains, causing the location to lack suppliers of fresh foods. Instead, processed food and food high in sugar and fats, which are known contributors to the proliferation of obesity in the US, are more readily available for consumption. In contrast, an area with higher access to supermarkets or vegetable shops with fresh foods is called a food oasis. The designation considers the type and the quality of food available to the population, in addition to the accessibility of the food through the size and the proximity of the food stores. In 2010, the United States Department of Agriculture reported that 23.5 million people in the US live in these "food deserts," low-income census tracts that are more than 1 mile (1609.34 meters) from a supermarket in urban or suburban areas and more than 10 miles (16093.4 meters) from a supermarket in rural areas. In this study, we aim to *explore to what extent food deserts exist in various cities throughout the state of Utah*.
 
 ## Data Sources
 
@@ -24,6 +24,8 @@ To answer this projects research question, we used store distance and store type
 ## Data Collection and Methodology
 
 The methodology for the collection of data in this study was built around the availability of store and census data and the research question.
+
+After brainstorming and narrowing down our question, we began the data collection phase of our project. To collect data, 10 random cities in Utah were selected from The World Population review's list of Utah cities by population. 5 random urban cities and 5 random rural cities were selected; these categories were determined by defining any city with a 2022 population below 20,000 as rural. The final cities selected were Salt Lake City, Provo, Logan, Ogden, South Jordan, Farmington, Woods Cross, Roosevelt, Morgan, and Wellington. Once the cities were collected, we collected data on that city's respective population, median household income, and registered vehicles. Grocery store data was gathered from the Google Maps free service. A random store from one of the cities chosen was selected, and information about the store name, store type, longitude, and latitude. There were three possible store types- convenience store, grocery store, or organic grocery store. This was repeated until each city had 5 store points respectively.  
 
 ## Initial Data Summaries
 
